@@ -1,0 +1,40 @@
+{{- if .Values.slots.one.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-one
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    slot: one
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.labels" . | nindent 6 }}
+      slot: one
+  template:
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+        slot: one
+    spec:
+      serviceAccountName: acr-sa
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.app.nodeHostname }}
+      containers:
+        - name: app
+          image: {{ include "app.image" .}}
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          resources:
+            limits:
+              memory: {{ .Values.app.resources.limits.memory }}
+              cpu: {{ .Values.app.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.app.resources.requests.memory }}
+              cpu: {{ .Values.app.resources.requests.cpu }}
+          env:
+            - name: "ASPNETCORE_ENVIRONMENT"
+              value: {{ .Values.app.environment }}
+{{- end }}

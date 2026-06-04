@@ -1,0 +1,31 @@
+
+replicaCount: 1
+slots:
+  one:
+    enabled: true
+  two:
+    enabled: false
+app:
+  name: search-api
+  namespace: prod
+  environment: production
+  tier: backend
+  context: accounts
+  slot: one
+  port: 8080
+  nodeHostname: worker1
+  image:
+    repository: acr_name.azurecr.io/search
+    tag: 21959925177126702c4ae6c8d1a5ebe1de080e5f
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: 500m
+    requests:
+      memory: 256Mi
+      cpu: 250m
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080

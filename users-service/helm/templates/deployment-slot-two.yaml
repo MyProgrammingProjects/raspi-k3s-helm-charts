@@ -1,0 +1,65 @@
+{{- if .Values.slots.two.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}-two
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    slot: two
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.labels" . | nindent 6 }}
+      slot: two
+  template:
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+        slot: two
+    spec:
+      serviceAccountName: acr-sa
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.app.nodeHostname }}
+      containers:
+        - name: app
+          image: {{ include "app.image" .}}
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          resources:
+            limits:
+              memory: {{ .Values.app.resources.limits.memory }}
+              cpu: {{ .Values.app.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.app.resources.requests.memory }}
+              cpu: {{ .Values.app.resources.requests.cpu }}
+          env:
+            - name: "ASPNETCORE_ENVIRONMENT"
+              value: {{ .Values.app.environment }}
+            - name: DbSettings__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret-{{ include "app.name" . }}
+                  key: connectionstring
+            - name: JWT__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret-{{ include "app.name" . }}
+                  key: audience
+            - name: JWT__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret-{{ include "app.name" . }}
+                  key: issuer
+            - name: JWT__SecretKey
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret-{{ include "app.name" . }}
+                  key: secretkey
+            - name: JWT__TimeToLive
+              valueFrom:
+                configMapKeyRef:
+                  name: jwt-config-{{ include "app.name" . }}
+                  key: time-to-live
+{{- end }}

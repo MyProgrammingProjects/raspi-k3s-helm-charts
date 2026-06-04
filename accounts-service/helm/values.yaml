@@ -1,0 +1,31 @@
+
+replicaCount: 1
+slots:
+  one:
+    enabled: true
+  two:
+    enabled: false
+app:
+  name: accounts-api
+  namespace: prod
+  environment: production
+  tier: backend
+  context: accounts
+  slot: one
+  port: 8080
+  nodeHostname: worker1
+  image:
+    repository: acr_name.azurecr.io/accounts
+    tag: b7e87f9fd654db2b6675c816935810515fb4cb7e
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: 500m
+    requests:
+      memory: 256Mi
+      cpu: 250m
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
