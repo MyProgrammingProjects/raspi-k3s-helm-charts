@@ -16,7 +16,7 @@ app:
   nodeHostname: worker1
   image:
     repository: acr_name.azurecr.io/accounts
-    tag: b7e87f9fd654db2b6675c816935810515fb4cb7e
+    tag: 0e9128fc3f2adc2f5c6ff838c9da093181070d57
     pullPolicy: IfNotPresent
   resources:
     limits:

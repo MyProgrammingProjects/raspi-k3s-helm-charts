@@ -16,7 +16,7 @@ app:
   nodeHostname: worker1
   image:
     repository: acr_name.azurecr.io/gateway
-    tag: 0648a6474390077cee4c288a148fded1dd39d821
+    tag: df82a0ff9347374a8c816fbbc786bf4cbcf9e351
     pullPolicy: IfNotPresent
   resources:
     limits:
