@@ -9,6 +9,8 @@ app:
   name: search-api
   namespace: prod
   environment: production
+  runAsUserId: 65532
+  serviceAccountName: acr-sa
   tier: backend
   context: accounts
   slot: one

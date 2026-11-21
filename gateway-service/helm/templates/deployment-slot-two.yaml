@@ -18,11 +18,20 @@ spec:
         {{- include "app.labels" . | nindent 8 }}
         slot: two
     spec:
-      serviceAccountName: acr-sa
+      securityContext:
+        runAsUser: {{ .Values.app.runAsUserId }}
+      serviceAccountName: {{ .Values.app.serviceAccountName }}
       nodeSelector:
         kubernetes.io/hostname: {{ .Values.app.nodeHostname }}
       containers:
         - name: app
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           image: {{ include "app.image" .}}
           imagePullPolicy: {{ .Values.app.image.pullPolicy }}
           ports:
